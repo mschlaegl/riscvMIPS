@@ -1,12 +1,14 @@
-# Linetime
+# riscvMIPS
 
 (C) 2024 Manfred Schlaegl <manfred.schlaegl@gmx.at>
 
 SPDX-License-Identifier: MIT
 
-Linetime is a compact tool to measure timing of console application.
-For each line (first character on a new line), a timestamp in the format
-seconds.milliseconds is printed before the line content.
+riscvMIPS is a compact tool to measure MIPS of console application.
+
+CAUTION: Does currently only provide valid results on single core machines!
+
+WORK IN PROGRESS
 
 ## Build
 
@@ -35,30 +37,16 @@ debug=1 make
 
 ## Usage
 ```
-$ ./linetime --help
-Linetime V1 (C) 2024 Manfred Schlaegl <manfred.schlaegl@gmx.at>
+$ ./riscvMIPS --help
+riscvMIPS V1 (C) 2024 Manfred Schlaegl <manfred.schlaegl@gmx.at>
 
 Usage examples:
-stdout:        $ <program to measure> | linetime
-stdout+stderr: $ <program to measure> 2>&1 | linetime
+stdout:        $ <program to measure> | riscvMIPS
+stdout+stderr: $ <program to measure> 2>&1 | riscvMIPS
 ```
 
 ### Example
-```
-$ (echo; sleep 0.3; echo "hello"; sleep 1; echo "world"; sleep 1.2; echo "!"; sleep 0.1) | ./linetime
-      0.000 : 
-      0.301 : hello
-      1.301 : world
-      2.502 : !
-      2.603 : 
-```
+TODO
 
 ### Format
-```
-      1.305 : world
--Timestamp--: -Original output--------------------------------------
-```
-Timestamp
- * Timestamp of first character in output line (above example 'w') relative to program start
- * Format: seconds.milliseconds (above example: 1 second and 305 millisecons)
-
+TODO

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 # version
-BIN_NAME=linetime
+BIN_NAME=riscvMIPS
 
 debug?=0
 
@@ -64,7 +64,7 @@ style:
 		(PWD=`pwd`; astyle $(ASTYLE_ARGS) $(C_SOURCES) $(HEADERS);)
 
 test: $(BIN_NAME)
-		(echo; sleep 0.3; echo "hello"; sleep 1; echo "world"; sleep 1.2; echo "!"; sleep 0.1) | ./$(BIN_NAME)
+		(sleep 0.3; echo "hello"; sleep 1; echo "world"; sleep 1.2; echo "!"; sleep 0.1) | ./$(BIN_NAME)
 
 clean:
 		- rm -rf .obj
