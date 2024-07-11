@@ -23,7 +23,7 @@ unsigned long long get_time_ms()
 	return (ts.tv_sec * 1000L + (ts.tv_nsec / 1000000L));
 }
 
-static unsigned long long get_instr_count()
+unsigned long long get_instr_count()
 {
 #ifdef __riscv
 #if __riscv_xlen == 32
@@ -106,7 +106,7 @@ int main(int argc, char **argv)
 	int c;
 
 	if (argc > 1) {
-		printf("riscvMIPS V0.1 (C) 2024 Manfred Schlaegl <manfred.schlaegl@gmx.at>\n\n");
+		printf("riscvlineMIPS V0.2 (C) 2024 Manfred Schlaegl <manfred.schlaegl@gmx.at>\n\n");
 		printf("Usage examples:\n");
 		printf("stdout:        $ <program to measure> | %s\n", argv[0]);
 		printf("stdout+stderr: $ <program to measure> 2>&1 | %s\n", argv[0]);

@@ -2,76 +2,34 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
-# version
-BIN_NAME=riscvMIPS
-
-debug?=0
-
-ASTYLE_ARGS=--options=none --suffix=none --quiet \
-	    --style=linux --indent=force-tab=8 --pad-header --pad-oper --indent-preprocessor
-INSTALL_BIN_DIR ?= /usr/local/bin
-INSTALL ?= install
-STRIP ?= strip
-
-# debug handling
-ifeq ($(debug),1)
-	# make debug=1
-	# no optimization, with debug symbols install unstripped
-	CFLAGS+=	-Og -g
-	INSTALLFLAGS=
-	OBJDIR=		.obj/debug
-else
-	CFLAGS+=	-O2
-	INSTALLFLAGS=	-s --strip-program=$(STRIP)
-	OBJDIR=		.obj/release
-endif
-
-CFLAGS+=\
-		-Wall -D_GNU_SOURCE
-LIBS+=
-LDFLAGS+=
-
-# All *.h files
-HEADERS := $(wildcard *h)
-
-# All *.c files
-C_SOURCES := $(wildcard *.c)
-
-# build %.o from %.c
-OBJS := $(patsubst %.c,$(OBJDIR)/%.o,$(C_SOURCES))
+SUBDIRS=riscvMIPS riscvlineMIPS
 
 
+.PHONY: all check style test clean distclean install
 
-.PHONY: all check style test clean distclean install create_obj_dir
+BINS := $(patsubst %,bin/%,$(SUBDIRS))
 
+all: $(BINS)
 
-all: $(BIN_NAME)
-
-create_obj_dir:
-		@for o in $(OBJS) ; do mkdir -p `dirname $${o}` ; done
-
-# generic rule
-$(OBJDIR)/%.o: %.c $(HEADERS) Makefile | create_obj_dir
-		$(CC) $(CFLAGS) -c $< -o $@
-
-$(BIN_NAME): $(OBJS) $(HEADERS) Makefile
-		$(CC) $(OBJS) $(CFLAGS) $(LDFLAGS) $(LIBS) -o $@
+bin/%:
+		mkdir -p bin
+		@(b=$(@:bin/%=%) && make -C $$b $$b && cp $$b/$$b bin)
 
 check:
-		cppcheck -q -f . ${C_SOURCES} ${HEADERS}
+		@for d in $(SUBDIRS) ; do make -C $$d $@ ; done
 
 style:
-		(PWD=`pwd`; astyle $(ASTYLE_ARGS) $(C_SOURCES) $(HEADERS);)
+		@for d in $(SUBDIRS) ; do make -C $$d $@ ; done
 
-test: $(BIN_NAME)
-		(sleep 0.3; echo "hello"; sleep 1; echo "world"; sleep 1.2; echo "!"; sleep 0.1) | ./$(BIN_NAME)
+test:
+		@for d in $(SUBDIRS) ; do make -C $$d $@ ; done
 
 clean:
-		- rm -rf .obj
-		- rm -f $(BIN_NAME)
+		@for d in $(SUBDIRS) ; do make -C $$d $@ ; done
+		- rm -rf bin
 
-distclean: clean
+distclean:
+		@for d in $(SUBDIRS) ; do make -C $$d $@ ; done
 
-install: all
-		-@mkdir -p $(INSTALL_BIN_DIR)
-		$(INSTALL) -m 755 $(INSTALLFLAGS) $(BIN_NAME) $(INSTALL_BIN_DIR)
+install:
+		@for d in $(SUBDIRS) ; do make -C $$d $@ ; done
